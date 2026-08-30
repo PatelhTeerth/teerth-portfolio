@@ -9,16 +9,25 @@ interface FadeInProps {
 
 export default function FadeIn({ children, className = "" }: FadeInProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
+  const [inView, setInView] = useState(false);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
 
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+
+    if (typeof IntersectionObserver === "undefined") {
+      const id = requestAnimationFrame(() => setInView(true));
+      return () => cancelAnimationFrame(id);
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setVisible(true);
+          setInView(true);
           observer.unobserve(el);
         }
       },
@@ -32,8 +41,8 @@ export default function FadeIn({ children, className = "" }: FadeInProps) {
   return (
     <div
       ref={ref}
-      className={`transition-all duration-700 ease-out ${
-        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
+      className={`transition-all duration-700 ease-out motion-reduce:transition-none motion-reduce:translate-y-0 ${
+        inView ? "translate-y-0" : "translate-y-3"
       } ${className}`}
     >
       {children}

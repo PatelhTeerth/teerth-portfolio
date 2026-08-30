@@ -74,16 +74,6 @@ export default function NeurotechVisual({
         <line x1="260" y1="174" x2="260" y2="250" stroke="#c8c4bc" strokeWidth="1" />
         <polygon points="260,250 256,244 264,244" fill="#c8c4bc" />
 
-        {/* Timing specs */}
-        <rect x="360" y="250" width="120" height="44" rx="3" stroke="#e4e2de" strokeWidth="1" fill="#ffffff" />
-        <text x="420" y="270" fill="#2c3e5a" fontSize="8" textAnchor="middle" fontFamily="ui-monospace, monospace">
-          SYNC ≤5 ms
-        </text>
-        <text x="420" y="284" fill="#6b7280" fontSize="8" textAnchor="middle" fontFamily="ui-monospace, monospace">
-          500 Hz LOOP
-        </text>
-        <line x1="320" y1="174" x2="360" y2="260" stroke="#e4e2de" strokeWidth="1" strokeDasharray="3 3" />
-
         <text x="28" y="360" fill="#c8c4bc" fontSize="9" fontFamily="ui-monospace, monospace" letterSpacing="0.04em">
           SYSTEM ARCHITECTURE — ILLUSTRATIVE
         </text>

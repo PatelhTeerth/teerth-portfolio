@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { siteConfig } from "@/data/site";
 import { CONTAINER } from "@/lib/constants";
@@ -17,6 +17,10 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<string | null>(null);
+  const menuToggleRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const firstLinkRef = useRef<HTMLAnchorElement>(null);
+  const wasMenuOpenRef = useRef(false);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -50,6 +54,65 @@ export default function Navbar() {
     return () => {
       document.body.style.overflow = "";
     };
+  }, [menuOpen]);
+
+  useEffect(() => {
+    if (menuOpen) {
+      wasMenuOpenRef.current = true;
+      firstLinkRef.current?.focus();
+      return;
+    }
+
+    if (wasMenuOpenRef.current) {
+      menuToggleRef.current?.focus();
+      wasMenuOpenRef.current = false;
+    }
+  }, [menuOpen]);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    const getFocusable = () => {
+      const items: HTMLElement[] = [];
+      if (menuToggleRef.current) items.push(menuToggleRef.current);
+      const menu = menuRef.current;
+      if (menu) {
+        items.push(
+          ...Array.from(menu.querySelectorAll<HTMLElement>("a[href], button")),
+        );
+      }
+      return items;
+    };
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setMenuOpen(false);
+        return;
+      }
+
+      if (event.key !== "Tab") return;
+
+      const focusable = getFocusable();
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement as HTMLElement | null;
+
+      if (event.shiftKey) {
+        if (!active || active === first || !focusable.includes(active)) {
+          event.preventDefault();
+          last.focus();
+        }
+      } else if (!active || active === last || !focusable.includes(active)) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
   }, [menuOpen]);
 
   const linkClass = (section?: string) =>
@@ -102,11 +165,13 @@ export default function Navbar() {
         </ul>
 
         <button
+          ref={menuToggleRef}
           type="button"
           className="md:hidden p-2 -mr-2 text-foreground"
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label={menuOpen ? "Close menu" : "Open menu"}
           aria-expanded={menuOpen}
+          aria-controls="mobile-menu"
         >
           <svg
             className="w-5 h-5"
@@ -133,12 +198,17 @@ export default function Navbar() {
       </nav>
 
       {menuOpen && (
-        <div className="md:hidden bg-surface border-b border-border">
+        <div
+          id="mobile-menu"
+          ref={menuRef}
+          className="md:hidden bg-surface border-b border-border"
+        >
           <ul className={`${CONTAINER} py-3 space-y-0.5`}>
-            {navLinks.map((link) => (
+            {navLinks.map((link, index) => (
               <li key={link.label}>
                 {link.external ? (
                   <a
+                    ref={index === 0 ? firstLinkRef : undefined}
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -149,6 +219,7 @@ export default function Navbar() {
                   </a>
                 ) : (
                   <Link
+                    ref={index === 0 ? firstLinkRef : undefined}
                     href={link.href}
                     className="block py-2.5 text-sm text-muted hover:text-accent transition-colors duration-200"
                     onClick={() => setMenuOpen(false)}

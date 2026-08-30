@@ -1,3 +1,7 @@
+export const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  "https://teerth-portfolio.vercel.app";
+
 export const CONTAINER = "max-w-5xl mx-auto px-5 sm:px-8";
 
 export const SECTIONS = {
