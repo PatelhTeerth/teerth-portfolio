@@ -3,6 +3,7 @@ import { CONTAINER } from "@/lib/constants";
 import SafeImage from "./SafeImage";
 import FpgaVisual from "./FpgaVisual";
 import NeurotechVisual from "./NeurotechVisual";
+import FifoVisual from "./FifoVisual";
 import SectionLabel from "./SectionLabel";
 
 interface ProjectHeroProps {
@@ -53,6 +54,8 @@ export default function ProjectHero({ project }: ProjectHeroProps) {
               <FpgaVisual className="border-0 rounded-md min-h-[300px]" />
             ) : project.visual === "neurotech" ? (
               <NeurotechVisual className="border-0 rounded-md min-h-[300px]" />
+            ) : project.visual === "fifo" ? (
+              <FifoVisual className="border-0 rounded-md min-h-[300px]" />
             ) : null}
           </div>
           {project.heroCaption && (
@@ -68,6 +71,11 @@ export default function ProjectHero({ project }: ProjectHeroProps) {
           {!project.heroImage && project.visual === "neurotech" && (
             <figcaption className="mt-2.5 text-xs text-muted/70 font-mono">
               System architecture — illustrative
+            </figcaption>
+          )}
+          {!project.heroImage && project.visual === "fifo" && (
+            <figcaption className="mt-2.5 text-xs text-muted/70 font-mono">
+              Asynchronous FIFO and CDC architecture — illustrative
             </figcaption>
           )}
         </figure>

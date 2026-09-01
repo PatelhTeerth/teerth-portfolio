@@ -5,7 +5,7 @@ export interface ProjectPreview {
   description: string;
   technologies: string[];
   image?: string;
-  visual?: "fpga" | "neurotech";
+  visual?: "fpga" | "neurotech" | "fifo";
   reverse?: boolean;
   imageClassName?: string;
   aspectClass?: string;
@@ -29,7 +29,7 @@ export interface ProjectDetail {
   introduction: string;
   heroImage?: string;
   heroCaption?: string;
-  visual?: "fpga" | "neurotech";
+  visual?: "fpga" | "neurotech" | "fifo";
   atAGlance: AtAGlanceItem[];
   overview: string;
   goal: string;
@@ -88,6 +88,24 @@ export const projectPreviews: ProjectPreview[] = [
     imageClassName: "object-contain p-6 sm:p-8 bg-[#f5f4f2]",
   },
   {
+    slug: "asynchronous-fifo-cdc",
+    title: "Asynchronous FIFO & CDC Verification",
+    organization: "SystemVerilog / Vivado",
+    description:
+      "Designing a dual-clock asynchronous FIFO in SystemVerilog using Gray-coded read/write pointers and synchronized clock-domain crossings, with a self-checking verification environment for validating reliable data transfer between independent clock domains.",
+    technologies: [
+      "SystemVerilog",
+      "RTL Design",
+      "Asynchronous FIFO",
+      "Clock-Domain Crossing",
+      "Gray Code",
+      "Assertions",
+      "Functional Coverage",
+      "Vivado",
+    ],
+    visual: "fifo",
+  },
+  {
     slug: "fpga-stopwatch",
     title: "FPGA RTL Stopwatch",
     organization: "Xilinx Basys 3 / Artix-7 FPGA",
@@ -103,6 +121,7 @@ export const projectPreviews: ProjectPreview[] = [
       "Artix-7",
     ],
     visual: "fpga",
+    reverse: true,
   },
   {
     slug: "neurotech",
@@ -120,7 +139,6 @@ export const projectPreviews: ProjectPreview[] = [
       "Python",
     ],
     visual: "neurotech",
-    reverse: true,
   },
 ];
 
@@ -257,6 +275,64 @@ export const projectDetails: Record<string, ProjectDetail> = {
     ],
     metaDescription:
       "Mixed-signal waveform generation hardware with PCB design, DAC control, isolated power, and oscilloscope validation at Corveus Medical.",
+  },
+  "asynchronous-fifo-cdc": {
+    slug: "asynchronous-fifo-cdc",
+    title: "Asynchronous FIFO & CDC Verification",
+    organization: "SystemVerilog / Vivado",
+    introduction:
+      "Designing and verifying a dual-clock asynchronous FIFO for safe data transfer between independent clock domains using SystemVerilog, Gray-coded pointers, synchronization logic, and a self-checking verification environment.",
+    visual: "fifo",
+    atAGlance: [
+      {
+        label: "Project",
+        value: "Dual-Clock Asynchronous FIFO",
+      },
+      {
+        label: "Focus",
+        value: "RTL Design / Clock-Domain Crossing / Functional Verification",
+      },
+      {
+        label: "Status",
+        value: "In Development — SystemVerilog / Vivado",
+      },
+    ],
+    overview:
+      "Designing a dual-clock asynchronous FIFO for reliable data transfer between unrelated write and read clock domains. The project focuses on RTL architecture, metastability-aware clock-domain crossing, pointer synchronization, FIFO status generation, and systematic verification.",
+    goal: "Build an asynchronous FIFO that safely transfers ordered data between independent clock domains while correctly generating full and empty conditions without directly transferring multi-bit binary counters across asynchronous boundaries.",
+    role: "Designing the SystemVerilog RTL architecture and developing the accompanying verification environment, including FIFO memory control, binary and Gray-coded pointer logic, synchronization stages, status generation, assertions, randomized stimulus, scoreboarding, and functional coverage.",
+    implementation: [
+      "Designing independent write-domain and read-domain control logic around separate wr_clk and rd_clk signals.",
+      "Implementing binary read and write pointers with an additional wrap bit for address and FIFO state tracking.",
+      "Converting binary pointers to Gray code before clock-domain crossing so only one pointer bit changes between consecutive states.",
+      "Passing Gray-coded pointers through two-flop synchronizers before using them in the opposite clock domain.",
+      "Generating the FULL condition inside the write domain using the synchronized read pointer.",
+      "Generating the EMPTY condition inside the read domain using the synchronized write pointer.",
+      "Using dual-port FIFO storage so write and read operations can proceed independently under their respective clocks.",
+      "Separating synchronization, pointer control, memory, and status-generation logic into clear RTL blocks.",
+    ],
+    validation: [
+      "Developing a self-checking SystemVerilog testbench with an expected-data scoreboard for verifying FIFO ordering and integrity.",
+      "Applying randomized write and read activity with independent clock periods to exercise asynchronous operation.",
+      "Adding assertions for overflow, underflow, invalid full/empty behavior, and data-ordering violations.",
+      "Building functional coverage around occupancy states, pointer wraparound, full/empty transitions, and concurrent activity.",
+      "Testing reset behavior and pointer synchronization across both clock domains.",
+      "Exercising corner cases including write-faster-than-read, read-faster-than-write, near-full, near-empty, and pointer rollover conditions.",
+    ],
+    technologies: [
+      "SystemVerilog",
+      "RTL Design",
+      "Asynchronous FIFO",
+      "Clock-Domain Crossing",
+      "Gray Code",
+      "Two-Flop Synchronizers",
+      "Assertions",
+      "Randomized Verification",
+      "Functional Coverage",
+      "Vivado",
+    ],
+    metaDescription:
+      "SystemVerilog asynchronous FIFO and clock-domain-crossing project using Gray-coded pointers, two-flop synchronization, assertions, randomized verification, and functional coverage.",
   },
   "fpga-stopwatch": {
     slug: "fpga-stopwatch",

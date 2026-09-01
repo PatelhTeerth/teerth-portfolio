@@ -16,6 +16,7 @@ export const SECTIONS = {
 export const PROJECT_SLUGS = [
   "radar-stereo-vision",
   "mixed-signal-waveform",
+  "asynchronous-fifo-cdc",
   "fpga-stopwatch",
   "neurotech",
 ] as const;
