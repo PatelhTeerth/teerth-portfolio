@@ -16,6 +16,8 @@ export const SECTIONS = {
 export const PROJECT_SLUGS = [
   "radar-stereo-vision",
   "mixed-signal-waveform",
+  "vlsi-16bit-alu",
+  "sram-layout-array",
   "asynchronous-fifo-cdc",
   "fpga-stopwatch",
   "neurotech",

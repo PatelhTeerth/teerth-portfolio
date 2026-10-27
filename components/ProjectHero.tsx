@@ -4,6 +4,8 @@ import SafeImage from "./SafeImage";
 import FpgaVisual from "./FpgaVisual";
 import NeurotechVisual from "./NeurotechVisual";
 import FifoVisual from "./FifoVisual";
+import AluVisual from "./AluVisual";
+import SramVisual from "./SramVisual";
 import SectionLabel from "./SectionLabel";
 
 interface ProjectHeroProps {
@@ -13,6 +15,20 @@ interface ProjectHeroProps {
 export default function ProjectHero({ project }: ProjectHeroProps) {
   const isRice = project.slug === "radar-stereo-vision";
   const isCorveus = project.slug === "mixed-signal-waveform";
+  const aspectClass =
+    project.heroAspectClass ??
+    (isRice
+      ? "aspect-[16/10] sm:aspect-[2/1]"
+      : isCorveus
+        ? "aspect-[4/3]"
+        : "aspect-[16/10] sm:aspect-[2/1]");
+  const imageClassName =
+    project.heroImageClassName ??
+    (isRice
+      ? "object-cover object-top"
+      : isCorveus
+        ? "object-contain p-6 sm:p-10 bg-[#f5f4f2]"
+        : "object-cover");
 
   return (
     <section className="pt-24 pb-12 sm:pt-28 sm:pb-16">
@@ -26,26 +42,14 @@ export default function ProjectHero({ project }: ProjectHeroProps) {
         </p>
         <figure>
           <div
-            className={`relative overflow-hidden rounded-md border border-border bg-[#f0eeeb] ${
-              isRice
-                ? "aspect-[16/10] sm:aspect-[2/1]"
-                : isCorveus
-                  ? "aspect-[4/3]"
-                  : "aspect-[16/10] sm:aspect-[2/1]"
-            }`}
+            className={`relative overflow-hidden rounded-md border border-border bg-[#f0eeeb] ${aspectClass}`}
           >
             {project.heroImage ? (
               <SafeImage
                 src={project.heroImage}
                 alt={project.title}
                 fill
-                className={
-                  isRice
-                    ? "object-cover object-top"
-                    : isCorveus
-                      ? "object-contain p-6 sm:p-10 bg-[#f5f4f2]"
-                      : "object-cover"
-                }
+                className={imageClassName}
                 sizes="(max-width: 768px) 100vw, 1024px"
                 priority
                 fallbackLabel={project.title}
@@ -56,6 +60,10 @@ export default function ProjectHero({ project }: ProjectHeroProps) {
               <NeurotechVisual className="border-0 rounded-md min-h-[300px]" />
             ) : project.visual === "fifo" ? (
               <FifoVisual className="border-0 rounded-md min-h-[300px]" />
+            ) : project.visual === "alu" ? (
+              <AluVisual className="border-0 rounded-md min-h-[300px]" />
+            ) : project.visual === "sram" ? (
+              <SramVisual className="border-0 rounded-md min-h-[300px]" />
             ) : null}
           </div>
           {project.heroCaption && (
@@ -76,6 +84,16 @@ export default function ProjectHero({ project }: ProjectHeroProps) {
           {!project.heroImage && project.visual === "fifo" && (
             <figcaption className="mt-2.5 text-xs text-muted/70 font-mono">
               Asynchronous FIFO and CDC architecture — illustrative
+            </figcaption>
+          )}
+          {!project.heroImage && project.visual === "alu" && (
+            <figcaption className="mt-2.5 text-xs text-muted/70 font-mono">
+              16-bit ALU architecture — illustrative
+            </figcaption>
+          )}
+          {!project.heroImage && project.visual === "sram" && (
+            <figcaption className="mt-2.5 text-xs text-muted/70 font-mono">
+              SRAM cell and array model — illustrative
             </figcaption>
           )}
         </figure>

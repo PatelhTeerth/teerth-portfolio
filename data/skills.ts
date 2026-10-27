@@ -1,15 +1,40 @@
 export const skillGroups = [
   {
-    title: "Embedded & Programming",
+    title: "Languages",
     skills: [
+      "SystemVerilog",
+      "Verilog",
       "C",
       "C++",
       "Python",
+      "Perl",
       "Assembly",
+      "Tcl",
       "Linux",
-      "Java",
-      "JavaScript",
-      "SQL",
+    ],
+  },
+  {
+    title: "RTL / Digital",
+    skills: [
+      "RTL Design",
+      "FPGA",
+      "FSMs",
+      "Digital Logic",
+      "Clock-Domain Crossing",
+      "VLSI",
+    ],
+  },
+  {
+    title: "EDA / Engineering",
+    skills: [
+      "Cadence Virtuoso",
+      "Synopsys PrimeTime",
+      "HSPICE",
+      "Vivado",
+      "KiCad",
+      "LTspice",
+      "Altium Designer",
+      "MATLAB",
     ],
   },
   {
@@ -25,36 +50,15 @@ export const skillGroups = [
     ],
   },
   {
-    title: "FPGA / Digital",
+    title: "Interfaces / Validation",
     skills: [
-      "Verilog",
-      "Vivado",
-      "RTL",
-      "FPGA",
-      "Digital Logic",
-      "VLSI",
-    ],
-  },
-  {
-    title: "Engineering Software",
-    skills: [
-      "KiCad",
-      "Altium Designer",
-      "LTspice",
-      "MATLAB",
-      "AutoCAD",
-    ],
-  },
-  {
-    title: "Testing & Interfaces",
-    skills: [
-      "Oscilloscope",
-      "Logic Analyzer",
       "SPI",
       "UART",
       "RS-485",
       "GPIO",
       "PWM",
+      "Oscilloscope",
+      "Logic Analyzer",
     ],
   },
 ];

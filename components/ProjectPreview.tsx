@@ -5,6 +5,8 @@ import TechnicalTags from "./TechnicalTags";
 import FpgaVisual from "./FpgaVisual";
 import NeurotechVisual from "./NeurotechVisual";
 import FifoVisual from "./FifoVisual";
+import AluVisual from "./AluVisual";
+import SramVisual from "./SramVisual";
 import SectionLabel from "./SectionLabel";
 
 interface ProjectPreviewProps {
@@ -52,6 +54,10 @@ export default function ProjectPreview({
                 <NeurotechVisual className="border-0 rounded-md" />
               ) : project.visual === "fifo" ? (
                 <FifoVisual className="border-0 rounded-md" />
+              ) : project.visual === "alu" ? (
+                <AluVisual className="border-0 rounded-md" />
+              ) : project.visual === "sram" ? (
+                <SramVisual className="border-0 rounded-md" />
               ) : null}
             </div>
           </Link>

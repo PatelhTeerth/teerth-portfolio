@@ -12,16 +12,19 @@ export default function NarrativeImageBlock({
   aspectClass = "aspect-[16/10]",
   imageClassName = "object-cover",
 }: NarrativeImageBlockProps) {
+  const resolvedAspect = image.aspectClass ?? aspectClass;
+  const resolvedImageClass = image.imageClassName ?? imageClassName;
+
   return (
     <figure className="mt-6">
       <div
-        className={`relative overflow-hidden rounded-md border border-border bg-[#f0eeeb] ${aspectClass}`}
+        className={`relative overflow-hidden rounded-md border border-border bg-[#f0eeeb] ${resolvedAspect}`}
       >
         <SafeImage
           src={image.src}
           alt={image.alt}
           fill
-          className={imageClassName}
+          className={resolvedImageClass}
           sizes="(max-width: 768px) 100vw, 672px"
           fallbackLabel={image.alt}
         />

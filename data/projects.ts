@@ -5,10 +5,11 @@ export interface ProjectPreview {
   description: string;
   technologies: string[];
   image?: string;
-  visual?: "fpga" | "neurotech" | "fifo";
+  visual?: "fpga" | "neurotech" | "fifo" | "alu" | "sram";
   reverse?: boolean;
   imageClassName?: string;
   aspectClass?: string;
+  featured?: boolean;
 }
 
 export interface AtAGlanceItem {
@@ -20,6 +21,8 @@ export interface NarrativeImage {
   src: string;
   alt: string;
   caption: string;
+  aspectClass?: string;
+  imageClassName?: string;
 }
 
 export interface ProjectDetail {
@@ -29,7 +32,9 @@ export interface ProjectDetail {
   introduction: string;
   heroImage?: string;
   heroCaption?: string;
-  visual?: "fpga" | "neurotech" | "fifo";
+  heroAspectClass?: string;
+  heroImageClassName?: string;
+  visual?: "fpga" | "neurotech" | "fifo" | "alu" | "sram";
   atAGlance: AtAGlanceItem[];
   overview: string;
   goal: string;
@@ -88,6 +93,49 @@ export const projectPreviews: ProjectPreview[] = [
     imageClassName: "object-contain p-6 sm:p-8 bg-[#f5f4f2]",
   },
   {
+    slug: "vlsi-16bit-alu",
+    title: "16-bit ALU & Kogge-Stone Adder",
+    organization: "UT Austin · ECE 460R / ECE 382M",
+    description:
+      "Designed a 16-bit ALU around a Kogge-Stone parallel-prefix adder, integrating arithmetic, logic, compare, and shift units through a Cadence–Synopsys VLSI flow with schematic capture, functional simulation, static timing analysis, and automatic place-and-route.",
+    technologies: [
+      "Cadence Virtuoso",
+      "NC Verilog",
+      "Synopsys PrimeTime",
+      "Cadence Innovus",
+      "Kogge-Stone Adder",
+      "Static Timing Analysis",
+      "Place and Route",
+      "VLSI",
+    ],
+    image: "/images/alu-layout.png",
+    aspectClass: "aspect-[4/3]",
+    imageClassName: "object-contain bg-black",
+    visual: "alu",
+  },
+  {
+    slug: "sram-layout-array",
+    title: "SRAM Cell Layout & Array Delay Model",
+    organization: "UT Austin · ECE 460R / ECE 382M",
+    description:
+      "Designed a latch-based SRAM cell through schematic, custom layout, DRC/LVS, and post-layout simulation, then modeled a 32×32 array with interconnect RC to measure worst-case memory access time.",
+    technologies: [
+      "Cadence Virtuoso",
+      "Custom Layout",
+      "Calibre DRC/LVS",
+      "Spectre",
+      "HSPICE",
+      "SRAM",
+      "RC Delay Modeling",
+      "VLSI",
+    ],
+    image: "/images/sram-inverter-layout.png",
+    aspectClass: "aspect-[4/3]",
+    imageClassName: "object-contain bg-black",
+    visual: "sram",
+    reverse: true,
+  },
+  {
     slug: "asynchronous-fifo-cdc",
     title: "Asynchronous FIFO & CDC Verification",
     organization: "SystemVerilog / Vivado",
@@ -103,6 +151,9 @@ export const projectPreviews: ProjectPreview[] = [
       "Functional Coverage",
       "Vivado",
     ],
+    image: "/images/fifo-waveform.png",
+    aspectClass: "aspect-[16/10]",
+    imageClassName: "object-contain bg-black",
     visual: "fifo",
   },
   {
@@ -121,7 +172,7 @@ export const projectPreviews: ProjectPreview[] = [
       "Artix-7",
     ],
     visual: "fpga",
-    reverse: true,
+    featured: false,
   },
   {
     slug: "neurotech",
@@ -139,6 +190,7 @@ export const projectPreviews: ProjectPreview[] = [
       "Python",
     ],
     visual: "neurotech",
+    featured: false,
   },
 ];
 
@@ -276,12 +328,190 @@ export const projectDetails: Record<string, ProjectDetail> = {
     metaDescription:
       "Mixed-signal waveform generation hardware with PCB design, DAC control, isolated power, and oscilloscope validation at Corveus Medical.",
   },
+  "vlsi-16bit-alu": {
+    slug: "vlsi-16bit-alu",
+    title: "16-bit ALU & Kogge-Stone Adder",
+    organization: "UT Austin · ECE 460R / ECE 382M",
+    introduction:
+      "A gate-level 16-bit ALU built around a Kogge-Stone parallel-prefix adder, completed through schematic design, functional simulation, static timing analysis, and automatic place-and-route.",
+    heroImage: "/images/alu-layout.png",
+    heroCaption:
+      "Innovus place-and-route layout of the 16-bit ALU with area rulers.",
+    heroAspectClass: "aspect-[4/3]",
+    heroImageClassName: "object-contain bg-black",
+    visual: "alu",
+    atAGlance: [
+      {
+        label: "Project",
+        value: "16-bit RISC ALU",
+      },
+      {
+        label: "Focus",
+        value: "Gate-level VLSI / Timing Optimization / Place-and-Route",
+      },
+      {
+        label: "Result",
+        value: "0.4284 ns adder delay · 1.6588 ns post-APR ALU",
+      },
+    ],
+    overview:
+      "Completed a two-part VLSI lab covering a 16-bit arithmetic unit and a full ALU for a 16-bit RISC datapath. The adder implements signed and unsigned add, subtract, increment, and decrement. The ALU reuses that adder and adds logic, compare, and shift operations, then finishes with Innovus place-and-route and post-layout timing.",
+    goal: "Build a functionally correct, delay-optimized 16-bit adder and integrate it into a 16-bit ALU that passes official test cases, meets a competitive PrimeTime critical-path delay, and completes automatic place-and-route with verified geometry and connectivity.",
+    role: "Designed the full standard-cell schematic hierarchy, wrote and ran NC Verilog tests, iterated on PrimeTime critical paths, implemented shift-overflow and flag logic, and completed Innovus place-and-route with post-APR timing.",
+    implementation: [
+      "Implemented a 16-bit Kogge-Stone parallel-prefix adder with generate/propagate preprocessing and a four-level prefix tree so every carry is produced in log2(16) stages.",
+      "Mapped a 3-bit CODE and CIN onto a shared adder datapath so signed/unsigned add, subtract, increment, and decrement reuse one arithmetic core.",
+      "Folded carry-in into bit-zero generate logic and used dual-rail XOR, AOI21 prefix cells, and pin-aware gate placement to shorten the adder critical path from 0.645 ns to 0.4284 ns.",
+      "Generated COUT and VOUT from intermediate carries so signed overflow does not wait on the final carry-out.",
+      "Integrated the adder with a logic unit, logarithmic barrel shifter, and signed comparator, using a small decoder to produce one-hot operation selects and VOUT enables.",
+      "Combined unit results at the output bits so the adder path pays one extra NAND rather than a full mux stage.",
+      "Designed the comparator independently of the adder, using group generate/propagate of A + ~B so six signed comparisons come from G, P, and CODE without a zero detector.",
+      "Implemented arithmetic-shift VOUT in parallel with the shifter: SLA flags sign-bit mismatch on shifted-out bits, SRA flags precision loss, and logical/rotate shifts never assert VOUT.",
+      "Restricted the design to the lab standard-cell library (NAND2, NAND3, AOI21, INVX1, INVX4) and completed Innovus automatic place-and-route of the 16-bit ALU.",
+    ],
+    implementationImages: [
+      {
+        src: "/images/alu-geometry.png",
+        alt: "Innovus Verify Geometry report with zero DRC violations",
+        caption:
+          "Innovus Verify Geometry: no DRC violations on the placed-and-routed ALU.",
+        aspectClass: "aspect-[16/10]",
+        imageClassName: "object-contain bg-[#0d0d0d] p-4 sm:p-6",
+      },
+      {
+        src: "/images/alu-connectivity.png",
+        alt: "Innovus Verify Connectivity report with no problems or warnings",
+        caption:
+          "Innovus Verify Connectivity: no problems or warnings on the ALU netlist.",
+        aspectClass: "aspect-[16/10]",
+        imageClassName: "object-contain bg-[#0d0d0d] p-4 sm:p-6",
+      },
+    ],
+    validation: [
+      "Verified the adder and ALU against the official course test cases; both designs passed all provided vectors.",
+      "Used NC Verilog functional simulation, including random stimulus, to check arithmetic, logic, compare, and shift behavior before timing closure.",
+      "Ran Synopsys PrimeTime static timing analysis on the adder (0.4284 ns) and on the ALU before place-and-route (1.4636 ns).",
+      "Completed post-APR PrimeTime analysis after Innovus layout, measuring 1.6588 ns delay and 6,340 µm² area.",
+      "Verified shift-overflow independently with amount-mask, ovfbit, and random shift cases so SLA/SRA VOUT matched the specification.",
+      "Checked Innovus Verify Geometry and Verify Connectivity on the final layout.",
+    ],
+    validationImages: [
+      {
+        src: "/images/alu-adder-timing.png",
+        alt: "PrimeTime critical-path report for the 16-bit adder",
+        caption:
+          "PrimeTime adder critical path: 0.4284 ns from CODE[1] to VOUT.",
+        aspectClass: "aspect-[16/10]",
+        imageClassName: "object-contain bg-[#0d0d0d] p-3 sm:p-5",
+      },
+      {
+        src: "/images/alu-postapr-timing.png",
+        alt: "PrimeTime post-APR critical-path report for the 16-bit ALU",
+        caption:
+          "Post-APR PrimeTime critical path: 1.6588 ns from CODE[1] to C[13].",
+        aspectClass: "aspect-[16/10]",
+        imageClassName: "object-contain bg-[#0d0d0d] p-3 sm:p-5",
+      },
+    ],
+    technologies: [
+      "Cadence Virtuoso",
+      "NC Verilog",
+      "Synopsys PrimeTime",
+      "Cadence Innovus",
+      "Kogge-Stone Adder",
+      "Standard-Cell Design",
+      "Static Timing Analysis",
+      "Place and Route",
+      "Gate-Level Simulation",
+      "VLSI",
+    ],
+    metaDescription:
+      "16-bit Kogge-Stone adder and RISC ALU designed in a Cadence–Synopsys VLSI flow with functional simulation, PrimeTime STA, and Innovus place-and-route.",
+  },
+  "sram-layout-array": {
+    slug: "sram-layout-array",
+    title: "SRAM Cell Layout & Array Delay Model",
+    organization: "UT Austin · ECE 460R / ECE 382M",
+    introduction:
+      "A custom-layout latch-based SRAM cell verified through DRC, LVS, and post-layout simulation, then used to model a 32×32 memory array and measure worst-case read access time including interconnect delay.",
+    heroImage: "/images/sram-inverter-layout.png",
+    heroCaption:
+      "Custom transistor-level inverter layout in Cadence Virtuoso, used for characterization and as a building block for the memory cell.",
+    heroAspectClass: "aspect-[4/3]",
+    heroImageClassName: "object-contain bg-black",
+    visual: "sram",
+    atAGlance: [
+      {
+        label: "Project",
+        value: "SRAM Layout & 32×32 Array Model",
+      },
+      {
+        label: "Focus",
+        value: "Custom Layout / Characterization / Access-Time Modeling",
+      },
+      {
+        label: "Flow",
+        value: "Virtuoso · Calibre · Spectre · HSPICE",
+      },
+    ],
+    overview:
+      "Completed a two-part VLSI lab covering transistor-level SRAM design and array-level delay modeling. Part A characterized a standard-cell inverter and implemented a 1-bit / 4-bit latch-based memory cell through schematic, layout, extraction, and mixed-simulator verification. Part B modeled a 32×32 array with a NOR row decoder and lumped RC wordline/bitline delay to find the longest memory read path.",
+    goal: "Produce a functionally correct, DRC/LVS-clean SRAM cell layout and a schematic array model that captures interconnect delay well enough to identify and measure the worst-case decoder-to-bitline access time.",
+    role: "Designed the cell schematic and layout, ran inverter characterization and post-layout simulations, completed DRC/LVS/PEX, built the 32×32 array delay model, and used Spectre to evaluate the critical read path.",
+    implementation: [
+      "Characterized a Metal-1 inverter with post-layout HSPICE, measuring rise and fall propagation delays across input slews of 10 ps, 30 ps, and 50 ps and output loads of 100 fF, 300 fF, and 500 fF.",
+      "Implemented a 1-bit latch-based memory cell with one write port (dc, sc) and two read ports (da/sa, db/sb), using back-to-back inverters and a pMOS feedback device sized at Wp = 340 nm, Wn = 170 nm, and L = 60 nm.",
+      "Created schematic and layout views of the 1-bit cell, then tiled four cells into a 4-bit word that shares sa, sb, and sc while keeping independent data I/O on each bit.",
+      "Constrained 1-bit routing to M1–M2 and 4-bit routing to M1–M3, adding a right-side VDD rail and left-side ground rail so the cell could abut into an array.",
+      "Extracted the 4-bit layout and verified write/read of both logic 1 and logic 0 with post-layout Spectre and HSPICE using the official course vectors.",
+      "Built a 32×32 array model around the provided NOR-based row decoder and sized 1-bit cell, instantiating only the path needed for worst-case read delay rather than all 1,024 physical cells.",
+      "Inserted distributed RC wordline and bitline segments using the process values 0.08 fF/µm and 0.67 Ω/µm, with an assumed 2.6 µm × 2.6 µm cell pitch, so interconnect delay appeared in schematic Spectre simulation.",
+      "Swept decoder address patterns and cell initial conditions to locate the longest decoder-input-to-BIT transition, using 100 ps address ramps and 1.0 V supply.",
+    ],
+    implementationImages: [
+      {
+        src: "/images/sram-cell-layout.png",
+        alt: "Custom Cadence Virtuoso layout of the SRAM cell transistors",
+        caption:
+          "Custom layout detail for the latch-based memory cell in Cadence Virtuoso.",
+        aspectClass: "aspect-[4/3]",
+        imageClassName: "object-contain bg-black",
+      },
+    ],
+    validation: [
+      "Recorded inverter Tr/Tf characterization tables and plots versus load and slew, including the maximum-slew / maximum-load waveform.",
+      "Verified 1-bit and 4-bit cells with post-layout Spectre by writing and later reading both 0 and 1.",
+      "Ran HSPICE on the 4-bit cell with the official test vectors and compared behavior against Spectre.",
+      "Completed Calibre DRC and LVS on the 4-bit layout and used PEX extraction for post-layout netlists.",
+      "Measured 4-bit layout extent from Calibre database coordinates for the area report.",
+      "Simulated the 32×32 array model in Spectre and reported the 50%-to-50% worst-case access delay from decoder input to BIT.",
+    ],
+    technologies: [
+      "Cadence Virtuoso",
+      "Custom Layout",
+      "Calibre DRC",
+      "Calibre LVS",
+      "PEX Extraction",
+      "Spectre",
+      "HSPICE",
+      "SRAM",
+      "RC Delay Modeling",
+      "FreePDK45",
+    ],
+    metaDescription:
+      "Custom latch-based SRAM cell layout with DRC/LVS and post-layout simulation, plus a 32×32 array RC delay model for worst-case memory access time.",
+  },
   "asynchronous-fifo-cdc": {
     slug: "asynchronous-fifo-cdc",
     title: "Asynchronous FIFO & CDC Verification",
     organization: "SystemVerilog / Vivado",
     introduction:
       "Designing and verifying a dual-clock asynchronous FIFO for safe data transfer between independent clock domains using SystemVerilog, Gray-coded pointers, synchronization logic, and a self-checking verification environment.",
+    heroImage: "/images/fifo-waveform.png",
+    heroCaption:
+      "Simulation waveform showing independent write/read clocks, Gray-coded pointer crossing, and full/empty behavior.",
+    heroAspectClass: "aspect-[16/10] sm:aspect-[2/1]",
+    heroImageClassName: "object-contain bg-black",
     visual: "fifo",
     atAGlance: [
       {
@@ -318,6 +548,16 @@ export const projectDetails: Record<string, ProjectDetail> = {
       "Building functional coverage around occupancy states, pointer wraparound, full/empty transitions, and concurrent activity.",
       "Testing reset behavior and pointer synchronization across both clock domains.",
       "Exercising corner cases including write-faster-than-read, read-faster-than-write, near-full, near-empty, and pointer rollover conditions.",
+    ],
+    validationImages: [
+      {
+        src: "/images/fifo-waveform.png",
+        alt: "GTKWave capture of asynchronous FIFO write and read transactions",
+        caption:
+          "Write and read activity across independent clocks, with Gray pointer synchronization and full/empty flags.",
+        aspectClass: "aspect-[16/10]",
+        imageClassName: "object-contain bg-black",
+      },
     ],
     technologies: [
       "SystemVerilog",
